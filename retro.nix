@@ -1,6 +1,6 @@
 { buildPythonPackage
 , setuptools
-, fetchFromGitHub, cmake, gcc, setuptools-scm, zlib, pkg-config, dbus, wheel}:
+, fetchFromGitHub, cmake, gcc, setuptools-scm, zlib, pkg-config, dbus, wheel, gym, gym-notices, pyglet, numpy, cloudpickle}:
 
 buildPythonPackage rec {
   pname = "retro";
@@ -34,6 +34,11 @@ buildPythonPackage rec {
 
   dependencies = [
     zlib
+    gym
+    pyglet
+    gym-notices
+    numpy
+    cloudpickle
   ];
 
   pythonImportsCheck = [ "gym" ];
