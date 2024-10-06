@@ -1,8 +1,7 @@
-# shell.nix
 let
   pkgs = import <nixpkgs> {};
 
-  python = pkgs.python3.override {
+  python = pkgs.python39.override {
     self = python;
     packageOverrides = pyfinal: pyprev: {
       retro = pyfinal.callPackage ./retro.nix { };
