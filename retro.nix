@@ -1,25 +1,40 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
+{ buildPythonPackage
 , setuptools
-, wheel
-}:
+, fetchFromGitHub, cmake, gcc, setuptools-scm, zlib, pkg-config, dbus, wheel}:
 
 buildPythonPackage rec {
-  pname = "gym-retro";
+  pname = "retro";
   version = "0.8.0";
+  format = "setuptools";
   
-  src = fetchPypi {
-    inherit pname version;
-    hash = "sha256-CP3V73yWSArRHBLUct4hrNMjWZlvaaUlkpm1QP66RWA=";
+  src = fetchFromGitHub {
+    owner = "openai";
+    repo = pname; 
+    rev = "refs/tags/v${version}";
+    hash = "sha256-JiMNkHb5NrQREuwmwoFrRCd1Zs/gtCgwx2ElgQx52XA=";
   };
 
   doCheck = false;
 
-  pyproject = true;
   build-system = [
-    setuptools
+   setuptools
+   setuptools-scm
+  ];
+
+  buildInputs = [
+    dbus
+  ];
+
+  nativeBuildInputs = [
+    gcc
+    cmake
+    pkg-config
     wheel
   ];
 
+  dependencies = [
+    zlib
+  ];
+
+  pythonImportsCheck = [ "gym" ];
 }
