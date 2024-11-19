@@ -1,0 +1,9 @@
+[project]
+name = "speedy-geeko"
+version = "0.1.0"
+description = "An agent to play the yoshi island level in super mario world"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "gym-retro>=0.8.0",
+]
