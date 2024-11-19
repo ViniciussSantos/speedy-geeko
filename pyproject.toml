@@ -7,3 +7,16 @@ requires-python = ">=3.8"
 dependencies = [
     "gym-retro>=0.8.0",
 ]
+
+[tool.pyright]
+enable = true
+pythonVersion = "3.8"
+venvPath = "."
+venv = ".venv"
+reportMissingImports = true
+
+[tool.mypy]
+python_version = "3.8"
+mypy_path = ".venv/lib/python3.8/site-packages"
+ignore_missing_imports = false
+
