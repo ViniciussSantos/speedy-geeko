@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "gym-retro>=0.8.0",
+    "neat-python>=0.92",
     "numpy>=1.24.4",
+    "opencv-python>=4.8.1.78",
 ]
 
 [tool.pyright]
