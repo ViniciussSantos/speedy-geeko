@@ -16,7 +16,7 @@ def log_debug(info):
         log_file.write(info + "\n")
 
 def eval_genome(genome, config):
-    net = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
+    net = neat.nn.RecurrentNetwork.create(genome, config)
     env = retro.make(game="SuperMarioWorld-Snes", state="YoshiIsland2", players=1)
 
     fitness_current = 0
