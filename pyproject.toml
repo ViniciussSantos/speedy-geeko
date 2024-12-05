@@ -23,3 +23,5 @@ python_version = "3.8"
 mypy_path = ".venv/lib/python3.8/site-packages"
 ignore_missing_imports = false
 
+[tool.ruff.format]
+quote-style = "single"
