@@ -8,12 +8,13 @@ Os algoritmos para execução do agente são escritos em Python e usam a bibliot
 
 
 ## Integrantes
-- Luccas Henrique 
-- Vinicius
-- Vinicius
-- Helena
-- Felipe
-- Rodrigo
+- Vinicius de Miranda Galvão Monteiro - RA: 11202020668
+- Rodrigo Oliveira Toscano de Melo - RA: 11202131335
+- Felipe Luiz dos Santos Chamelete - RA: 11202021024
+- Helena de Alcântara Gomes de Souza - RA: 11201812345
+- Vinicius Santana Santos - RA: 11201811841
+- Luccas Henrique Figueira Cortes - RA: 11202130811
+
 
 ## Execução
 > [!IMPORTANT]
