@@ -14,14 +14,12 @@ def get_input_dimensions():
 
 def generate_input_data(observale_env, imgarray: list, x: int, y: int):
     imgarray.clear()
-    print(observale_env)
     observale_env = cv2.resize(observale_env, (x, y))
-    observale_env = cv2.cvtColor(observale_env, cv2.COLOR_BGR2GRAY)
-    observale_env = np.reshape(observale_env, (x, y))
+    if len(observale_env.shape) == 3:
+        observale_env = cv2.cvtColor(observale_env, cv2.COLOR_BGR2GRAY)
 
-    for i in observale_env:
-        for j in i:
-            imgarray.append(j)
+    for pixel_row in observale_env:
+        imgarray.extend(pixel_row)
 
     return imgarray
 
