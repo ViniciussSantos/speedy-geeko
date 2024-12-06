@@ -2,7 +2,6 @@ import pickle
 
 import cv2
 import neat
-import numpy as np
 import retro
 import os
 
@@ -58,16 +57,16 @@ def score_y_pos(y, max_y, current_fit):
 
 
 def score_collected_coins(coins, max_coins, current_fit):
-    if coins > max_coins:
+    if coins > 0 and coins > max_coins:
         current_fit += coins - max_coins
-        max_coins = max
+        max_coins = coins
     return max_coins, current_fit
 
 
 def score_collected_yoshicoins(yoshicoins, max_yoshicoins, current_fit):
     if yoshicoins > 0 and yoshicoins > max_yoshicoins:
         current_fit += (yoshicoins - max_yoshicoins) * 10
-        max_yoshicoins = max
+        max_yoshicoins = yoshicoins
     return max_yoshicoins, current_fit
 
 
