@@ -6,6 +6,7 @@ import numpy as np
 import retro
 import os
 
+
 def get_input_dimensions():
     assert env.observation_space.shape is not None
     x, y, _ = env.observation_space.shape
@@ -86,8 +87,7 @@ def score_powerups(powerups, last_powerup, current_fit):
 
 def eval_genomes(genomes, config):
     def evaluate_single_genome(genome_id, genome, config):
-        observation = env.reset()
-        print(observation)
+        observation = env.reset()[0]
         net = neat.nn.RecurrentNetwork.create(genome, config)
 
         x, y = get_input_dimensions()
@@ -113,7 +113,7 @@ def eval_genomes(genomes, config):
             )
             neural_network_output = net.activate(neural_network_input)
 
-            observation, reward, done, _ = env.step(neural_network_output)
+            observation, reward, done, _, _ = env.step(neural_network_output)
             ram = env.get_ram()
 
             close_msg(ram)
@@ -170,6 +170,7 @@ def eval_genomes(genomes, config):
     for genome_id, genome in genomes:
         evaluate_single_genome(genome_id, genome, config)
 
+
 def main():
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config.ini')
@@ -182,16 +183,16 @@ def main():
     )
     try:
         pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint')
-        print('checkpoint loaded.')
+        print('Checkpoint loaded.')
     except FileNotFoundError:
-        print('Not checkpoint found. starting training from scratch')
+        print('No checkpoint found. Starting training from scratch.')
         pop = neat.Population(config)
 
     pop.add_reporter(neat.StdOutReporter(True))
     pop.add_reporter(neat.StatisticsReporter())
     pop.add_reporter(neat.Checkpointer(10))
 
-    winner = pop.run(eval_genomes, 30)
+    winner = pop.run(eval_genomes)
 
     with open('winner.pkl', 'wb') as f:
         pickle.dump(winner, f)
