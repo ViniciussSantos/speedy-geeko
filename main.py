@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 import pickle
 
-env = retro.make(game='SuperMarioWorld-Snes', state='YoshiIsland1', players=1)
+env = retro.make(game='SuperMarioWorld-Snes', state='YoshiIsland2', players=1)
 
 def getRam(env):
     ram = []
