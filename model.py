@@ -287,7 +287,7 @@ def main():
     )
 
     # Run the NEAT algorithm with parallel evaluation
-    winner = pop.run(parallel_evaluator.evaluate)
+    winner = pop.run(parallel_evaluator.evaluate, 200)
 
     with open('winner.pkl', 'wb') as f:
         pickle.dump(winner, f)
