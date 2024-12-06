@@ -8,76 +8,116 @@ import pickle
 
 env = retro.make(game='SuperMarioWorld-Snes', state='YoshiIsland2', players=1)
 
-def getRam(env):
-    ram = []
-    for k, v in env.data.memory.blocks.items():
-        ram += list(v)
-    return np.array(ram)
-
 # Função para registrar logs de depuração
 def log_debug(info):
     with open("debug_log.txt", "a") as log_file:
         log_file.write(info + "\n")
 
 def eval_genomes(genomes, config):
-    
     for genome_id, genome in genomes:
         ob = env.reset()
         action = env.action_space.sample()
-        
+
         inx, iny, inc = env.observation_space.shape
         inx = int(inx / 8)
         iny = int(iny / 8)
-        
+
         net = neat.nn.recurrent.RecurrentNetwork.create(genome, config)
-        
+
         current_max_fitness, fitness_current, frame, counter = 0, 0, 0, 0
         pos_x, pos_x_max = 0, 0
-        img_array = []
-        
-        # Indica que o Mario está vivo
+        score, score_tracker = 0, 0
+        coins, coins_tracker = 0, 0
+        yoshi_coins, yoshi_coins_tracker = 0, 0
+        pos_x_previous, pos_y_previous = 0, 0
+        power_ups, power_ups_last = 0, 0
+        end, jump = 0, 0
+
         done = False
-        
-        # Enquanto o Mario estiver vivo
+
         while not done:
-            env.render()
+            #env.render()
             frame += 1
-            
+
             ob = cv2.resize(ob, (inx, iny))
             ob = cv2.cvtColor(ob, cv2.COLOR_BGR2GRAY)
             ob = np.reshape(ob, (inx, iny))
-            
-            for x in ob:
-                for y in x:
-                    img_array.append(y)
-                    
-            img_array = np.array(img_array) / 255.0
+
+            img_array = ob.flatten() / 255.0
             nn_output = net.activate(img_array)
-            log_debug(f"Saída da rede neural: {nn_output}")
-            
+
             ob, rew, done, info = env.step(nn_output)
-            img_array = []
-            
+
+            pos_x = info['x']
+            score = info['score']
+            coins = info['coins']
+            end = info['endOfLevel']
+            yoshi_coins = info['yoshiCoins']
+            pos_y = info['y']
+            jump = info['jump']
+            power_ups = info['powerups']
+
+            if pos_x > pos_x_max:
+                fitness_current += 1
+                pos_x_max = pos_x
+
             fitness_current += rew
+
+            if pos_x > pos_x_previous:
+                if jump > 0:
+                    fitness_current += 10
+                fitness_current += (pos_x / 10)
+                pos_x_previous = pos_x
+                counter = 0
+            else:
+                counter += 1
+                fitness_current -= 0.1
+
+            if pos_y < pos_y_previous:
+                fitness_current += 10
+                pos_y_previous = pos_y
+
+            if power_ups < power_ups_last:
+                fitness_current -= 50
+                print("Lost Upgrade")
+            elif power_ups > power_ups_last:
+                fitness_current += 0.05
+            power_ups_last = power_ups
+
+            if score > score_tracker:
+                fitness_current += score * 5
+                score_tracker = score
+
+            if coins > coins_tracker:
+                fitness_current += coins * 5
+                coins_tracker = coins
+
+            if yoshi_coins > yoshi_coins_tracker:
+                fitness_current += yoshi_coins * 5
+                yoshi_coins_tracker = yoshi_coins
+
+            if end == 1:
+                fitness_current += 10000000
+                done = True
             
+            '''   
             if fitness_current > current_max_fitness:
                 current_max_fitness = fitness_current
                 counter = 0
             else:
                 counter += 1
-                
+            ''' 
+            
             if done or counter == 250:
                 done = True
                 print(genome_id, fitness_current)
-                
-            genome.fitness = fitness_current
-        
 
-# Função principal
+            genome.fitness = fitness_current
+
+
 def main():
     print("Iniciando o treinamento...")
 
-    # Carrega o arquivo de configuração
     config_path = os.path.join(os.path.dirname(__file__), "config-feedforward")
     config = neat.Config(
         neat.DefaultGenome,
@@ -87,7 +127,6 @@ def main():
         config_path,
     )
 
-    # Tenta carregar um checkpoint salvo, ou inicia um novo treinamento
     try:
         pop = neat.Checkpointer.restore_checkpoint("neat-checkpoint")
         print("Checkpoint carregado com sucesso.")
@@ -95,23 +134,17 @@ def main():
         print("Nenhum checkpoint encontrado. Iniciando treinamento do zero.")
         pop = neat.Population(config)
 
-    # Configura relatórios
     pop.add_reporter(neat.StdOutReporter(True))
     pop.add_reporter(neat.StatisticsReporter())
-    pop.add_reporter(neat.Checkpointer(10))
+    pop.add_reporter(neat.Checkpointer(50))
 
-    # Inicia o treinamento por 30 gerações
-    winner = pop.run(eval_genomes, 30)
+    winner = pop.run(eval_genomes, 1000)
 
-    # Salva o melhor genoma em um arquivo
     with open("winner.pkl", "wb") as f:
         pickle.dump(winner, f)
 
     print("Treinamento concluído. Melhor genoma salvo em 'winner.pkl'.")
 
-# Executa o programa
+
 if __name__ == "__main__":
     main()
-
-    
-
