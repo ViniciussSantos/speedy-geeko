@@ -113,7 +113,7 @@ def eval_genomes_sequential(genomes, config):
             )
             neural_network_output = net.activate(neural_network_input)
 
-            observation, reward, done, _ = env.step(neural_network_output)
+            observation, reward, done, _, _ = env.step(neural_network_output)
             ram = env.get_ram()
 
             close_msg(ram)
