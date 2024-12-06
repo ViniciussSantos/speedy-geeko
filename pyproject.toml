@@ -5,11 +5,10 @@ description = "An agent to play the yoshi island level in super mario world"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
-    "gym-retro>=0.8.0",
-    "gym==0.22.0",
     "neat-python>=0.92",
     "numpy>=1.24.4",
     "opencv-python>=4.8.1.78",
+    "stable-retro>=0.9.2",
 ]
 
 [tool.pyright]

@@ -28,38 +28,28 @@ wheels = [
 ]
 
 [[package]]
-name = "gym"
-version = "0.26.2"
+name = "farama-notifications"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/2c/8384832b7a6b1fd6ba95bbdcae26e7137bb3eedc955c42fd5cdcc086cfbf/Farama-Notifications-0.0.4.tar.gz", hash = "sha256:13fceff2d14314cf80703c8266462ebf3733c7d165336eee998fc58e545efd18", size = 2131 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/05/2c/ffc08c54c05cdce6fbed2aeebc46348dbe180c6d2c541c7af7ba0aa5f5f8/Farama_Notifications-0.0.4-py3-none-any.whl", hash = "sha256:14de931035a41961f7c056361dc7f980762a143d05791ef5794a751a2caf05ae", size = 2511 },
+]
+
+[[package]]
+name = "gymnasium"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cloudpickle" },
-    { name = "gym-notices" },
+    { name = "farama-notifications" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
     { name = "numpy" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ab/b1/eb05a423eb801ab7d0715d6a3b28d92589e30b437052553df19ca2087240/gym-0.26.2.tar.gz", hash = "sha256:e0d882f4b54f0c65f203104c24ab8a38b039f1289986803c7d02cdbe214fbcc4", size = 721689 }
-
-[[package]]
-name = "gym-notices"
-version = "0.0.8"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b4/62/d312681b09cacf77d04237a2815653c58e5031998bb613ce114b85fc3f57/gym-notices-0.0.8.tar.gz", hash = "sha256:ad25e200487cafa369728625fe064e88ada1346618526102659b4640f2b4b911", size = 2685 }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/12/1047b8fdbfcdce74022048d916e844ad7e6e1114d81d26a7aed657e3a76d/gymnasium-1.0.0.tar.gz", hash = "sha256:9d2b66f30c1b34fe3c2ce7fae65ecf365d0e9982d2b3d860235e773328a3b403", size = 821389 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/26/d786c6bec30fe6110fd3d22c9a273a2a0e56c0b73b93e25ea1af5a53243b/gym_notices-0.0.8-py3-none-any.whl", hash = "sha256:e5f82e00823a166747b4c2a07de63b6560b1acb880638547e0cabf825a01e463", size = 2965 },
-]
-
-[[package]]
-name = "gym-retro"
-version = "0.8.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "gym" },
-    { name = "pyglet" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/d5/6204ed9546eeb6344d500450f566329fbaaf0d4a7e250be1f01ae2290807/gym_retro-0.8.0-cp38-cp38-macosx_10_13_x86_64.whl", hash = "sha256:7c8684c456c15c8834d00c31e4628e4424e4cd5920fb0f09a60d4787f2dcf485", size = 146056830 },
-    { url = "https://files.pythonhosted.org/packages/c0/d9/39a89bbba20f244f328dbb893005160818f4dd9e932fa7e335d3df6aa776/gym_retro-0.8.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:b10e47b5c5f3ba9adae46e70e71bf3df0f53d07feaad904b5e5bb20fbafb9057", size = 161943224 },
-    { url = "https://files.pythonhosted.org/packages/ca/ce/c102fc8e527cf7be8c8bfa419a9030e1a124e0372ab2fb058773dd5468e3/gym_retro-0.8.0-cp38-cp38-win_amd64.whl", hash = "sha256:410ba891b52bdee1d1f658116bd2715ed84cc23bf62e8b7b1b862e39b04dbc9c", size = 151950171 },
+    { url = "https://files.pythonhosted.org/packages/de/85/f5039ce2df5f0789ff1240f08a59f3e8c92e4c5f99543b7aad7388532f7c/gymnasium-1.0.0-py3-none-any.whl", hash = "sha256:b6f40e1e24c5bd419361e1a5b86a9117d2499baecc3a660d44dfff4c465393ad", size = 958120 },
 ]
 
 [[package]]
@@ -185,19 +175,43 @@ name = "speedy-geeko"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "gym-retro" },
     { name = "neat-python" },
     { name = "numpy" },
     { name = "opencv-python", version = "4.8.1.78", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "opencv-python", version = "4.10.0.84", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "stable-retro" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "gym-retro", specifier = ">=0.8.0" },
     { name = "neat-python", specifier = ">=0.92" },
     { name = "numpy", specifier = ">=1.24.4" },
     { name = "opencv-python", specifier = ">=4.8.1.78" },
+    { name = "stable-retro", specifier = ">=0.9.2" },
+]
+
+[[package]]
+name = "stable-retro"
+version = "0.9.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gymnasium" },
+    { name = "pyglet" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/39/b3/befcc36eca41c11b9491b8eb2ed22fa0a4b47810f053858455186ac530a0/stable-retro-0.9.2.tar.gz", hash = "sha256:240861fc4088fef00f0cee97c8d16d0ec1965827111429c4660d2405620a40f0", size = 111083972 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ae/94/072b7776cf61dc92e45f220d5980687f7a3bfb36c71ae156d7a56de32d5a/stable_retro-0.9.2-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:20ec47c45130e6eab28d0ee70a1823ca385ec1743b332759f688aed84129d391", size = 95263251 },
+    { url = "https://files.pythonhosted.org/packages/b2/f0/b478739d00cf68a7faf59818b903ecf5b1bb92968eb301a0b875b612daea/stable_retro-0.9.2-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:e17facd0484b7db527518165a0c396b7bbd5bdd68d40f5dffc05bc59d36ac39f", size = 95245091 },
+    { url = "https://files.pythonhosted.org/packages/3e/a3/798679c85f320cbfbcb018b1fd93d4eee456e9f95d8e039e77b81c5a9262/stable_retro-0.9.2-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:f7af1655f145c5b13559739950f4a2160e69a22bb8f326dbfeb2a4f1939ec0b4", size = 95261940 },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.12.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8", size = 85321 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d", size = 37438 },
 ]
 
 [[package]]
