@@ -238,7 +238,7 @@ def eval_genome_parallel(genome, config):
             fitness -= 100
             done = True
 
-        if level_end < 80:
+        if level_end == 1:
             fitness += 5000
             done = True
 
