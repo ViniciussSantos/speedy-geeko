@@ -192,7 +192,7 @@ def eval_genome_parallel(genome, config):
     neural_network_input = []
 
     while not done:
-        env.render()
+        #env.render()
 
         neural_network_input = generate_input_data(
             observation, neural_network_input, x, y
