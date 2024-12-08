@@ -1,39 +1,80 @@
+import os
+import pickle
+
+import cv2
+import neat
 import retro
-import argparse
 
-# Configuração do parser para receber argumentos da linha de comando
-parser = argparse.ArgumentParser(description='Reproduzir um arquivo de replay .bk2')
-parser.add_argument('--vid', type=str, required=True, help='Nome do arquivo .bk2 a ser reproduzido')
 
-# Parseia os argumentos fornecidos pelo usuário
-args = parser.parse_args()
+def get_input_dimensions():
+    assert env.observation_space.shape is not None
+    x, y, _ = env.observation_space.shape
+    return int(x / 8), int(y / 8)
 
-# Exibe o nome do arquivo .bk2 fornecido
-print(f"Reproduzindo o arquivo: {args.vid}")
 
-# Carrega o arquivo de replay (.bk2)
-movie = retro.Movie(args.vid)
-movie.step()  # Avança para o primeiro frame do replay
+def generate_input_data(observale_env, imgarray: list, x: int, y: int):
+    imgarray.clear()
+    observale_env = cv2.resize(observale_env, (x, y))
+    if len(observale_env.shape) == 3:
+        observale_env = cv2.cvtColor(observale_env, cv2.COLOR_BGR2GRAY)
 
-# Configura o ambiente de jogo com base no jogo especificado no arquivo .bk2
-env = retro.make(
-    game=movie.get_game(),             # Obtém o nome do jogo do arquivo .bk2
-    state=None,                        # Nenhum estado inicial específico
-    use_restricted_actions=retro.Actions.ALL  # Usa todas as ações disponíveis
-)
+    for pixel_row in observale_env:
+        imgarray.extend(pixel_row)
 
-# Define o estado inicial da emulação com base no estado salvo no .bk2
-env.initial_state = movie.get_state()
-env.reset()  # Reinicia o ambiente
+    return imgarray
 
-# Reproduz o replay frame a frame
-while movie.step():  # Enquanto houver frames no arquivo
-    keys = [
-        movie.get_key(button, player)  # Obtém o estado do botão para cada jogador
-        for player in range(movie.players)
-        for button in range(env.num_buttons)
-    ]
-    # Passa os inputs registrados no .bk2 para o ambiente
-    _obs, _rew, _done, _info = env.step(keys)
-    # Renderiza o ambiente de jogo
-    env.render()
+
+def close_msg(ram):
+    if ram[0x1426] != 0:
+        close = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+        [env.step(close) for _ in range(2)]
+
+
+def watch(genome, config):
+    observation = env.reset()[0]
+    net = neat.nn.RecurrentNetwork.create(genome, config)
+
+    done = False
+    neural_network_input = []
+
+    x, y = get_input_dimensions()
+
+    while not done:
+        env.render()
+
+        neural_network_input = generate_input_data(
+            observation, neural_network_input, x, y
+        )
+        neural_network_output = net.activate(neural_network_input)
+
+        observation, _, done, _, _ = env.step(neural_network_output)
+
+        ram = env.get_ram()
+        close_msg(ram)
+
+        level_end = ram[0x13D6]
+
+        if level_end == 1:
+            done = True
+
+
+def main():
+    local_dir = os.path.dirname(__file__)
+    config_path = os.path.join(local_dir, 'config.ini')
+    config = neat.Config(
+        neat.DefaultGenome,
+        neat.DefaultReproduction,
+        neat.DefaultSpeciesSet,
+        neat.DefaultStagnation,
+        config_path,
+    )
+
+    with open('winner.pkl', 'rb') as input_file:
+        winner = pickle.load(input_file)
+
+    watch(winner, config)
+
+
+if __name__ == '__main__':
+    env = retro.make(game='SuperMarioWorld-Snes', state='YoshiIsland2', players=1)
+    main()
