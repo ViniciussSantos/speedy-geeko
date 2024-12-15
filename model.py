@@ -85,92 +85,6 @@ def score_powerups(powerups, last_powerup, current_fit):
     return powerups, current_fit
 
 
-def eval_genomes_sequential(genomes, config):
-    def evaluate_single_genome(genome_id, genome, config):
-        observation = env.reset()[0]
-        net = neat.nn.RecurrentNetwork.create(genome, config)
-
-        x, y = get_input_dimensions()
-        fitness, counter = 0, 0
-        state = {
-            'max_points': 0,
-            'max_xPos': 0,
-            'max_yPos': 0,
-            'max_coins': 0,
-            'max_yoshicoins': 0,
-            'last_powerup': 0,
-            'checkpoint_reached': False,
-        }
-
-        done = False
-        neural_network_input = []
-
-        while not done:
-            env.render()
-
-            neural_network_input = generate_input_data(
-                observation, neural_network_input, x, y
-            )
-            neural_network_output = net.activate(neural_network_input)
-
-            observation, reward, done, _, _ = env.step(neural_network_output)
-            ram = env.get_ram()
-
-            close_msg(ram)
-            x_pos = ram[0x95] * 256 + ram[0x94]
-            y_pos = ram[0x00D3]
-            coins = ram[0x0DBF]
-            yoshi_coins = ram[0x1420]
-            powerup = ram[0x0019]
-            checkpoint = ram[0x13CE]
-            dead = ram[0x0071]
-            level_end = ram[0x13D6]
-            points = reward / 10
-
-            state['max_points'], fitness = score_points(
-                points, state['max_points'], fitness
-            )
-            state['max_xPos'], fitness, counter = score_x_pos(
-                x_pos, state['max_xPos'], fitness, counter
-            )
-            state['max_yPos'], fitness = score_y_pos(y_pos, state['max_yPos'], fitness)
-            state['max_coins'], fitness = score_collected_coins(
-                coins, state['max_coins'], fitness
-            )
-            state['max_yoshicoins'], fitness = score_collected_yoshicoins(
-                yoshi_coins, state['max_yoshicoins'], fitness
-            )
-            state['last_powerup'], fitness = score_powerups(
-                powerup, state['last_powerup'], fitness
-            )
-
-            if checkpoint == 1 and not state['checkpoint_reached']:
-                state['checkpoint_reached'] = True
-                fitness += 1000
-
-            if dead == 9:
-                fitness -= 100
-                done = True
-
-            if level_end < 80:
-                fitness += 5000
-                done = True
-
-            if counter == 250:
-                fitness -= 125
-                done = True
-
-        # Print genome performance
-        print(genome_id, fitness)
-
-        # Update genome's fitness
-        genome.fitness = fitness
-
-    # Evaluate each genome in the population
-    for genome_id, genome in genomes:
-        evaluate_single_genome(genome_id, genome, config)
-
-
 def eval_genome_parallel(genome, config):
     observation = env.reset()[0]
     net = neat.nn.RecurrentNetwork.create(genome, config)
@@ -192,7 +106,7 @@ def eval_genome_parallel(genome, config):
     neural_network_input = []
 
     while not done:
-        #env.render()
+        # env.render()
 
         neural_network_input = generate_input_data(
             observation, neural_network_input, x, y
@@ -252,11 +166,12 @@ def eval_genome_parallel(genome, config):
     # Update genome's fitness
     return fitness
 
+
 def test(genome, config):
     try:
         eval_genome_parallel(genome, config)
     except Exception as e:
-        print(f"Error evaluating genome: {e}")
+        print(f'Error evaluating genome: {e}')
         return 0
 
 
