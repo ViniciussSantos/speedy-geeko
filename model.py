@@ -160,10 +160,8 @@ def eval_genome_parallel(genome, config):
             fitness -= 125
             done = True
 
-    # Print genome performance
     print('fitness %s', fitness)
 
-    # Update genome's fitness
     return fitness
 
 
@@ -196,12 +194,10 @@ def main():
     pop.add_reporter(neat.StatisticsReporter())
     pop.add_reporter(neat.Checkpointer(10))
 
-    # Create ParallelEvaluator with the number of workers (e.g., 4)
     parallel_evaluator = neat.ParallelEvaluator(
         multiprocessing.cpu_count(), eval_genome_parallel
     )
 
-    # Run the NEAT algorithm with parallel evaluation
     winner = pop.run(parallel_evaluator.evaluate, 200)
 
     with open('winner.pkl', 'wb') as f:
